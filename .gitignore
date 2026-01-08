@@ -36,3 +36,5 @@ obj/
 .cache
 
 sentry-native.sln
+
+.sentry-*/

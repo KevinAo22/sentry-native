@@ -792,6 +792,13 @@ endif()
 # ===== example, also used as integration test =====
 
 if(SENTRY_BUILD_EXAMPLES)
+	add_executable(sentry_example_cpp examples/example.cpp)
+	set_target_properties(sentry_example_cpp PROPERTIES
+		CXX_STANDARD 17
+		CXX_STANDARD_REQUIRED ON
+	)
+	target_link_libraries(sentry_example_cpp PRIVATE sentry)
+
 	add_executable(sentry_example examples/example.c)
 	if(XBOX)
 		set_target_properties(sentry_example PROPERTIES VS_USER_PROPS gdk_build.props)

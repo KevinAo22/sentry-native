@@ -6,5 +6,10 @@
   "files.insertFinalNewline": true,
 
   // C++ Extension
-  "C_Cpp.autoAddFileAssociations": false
+  "C_Cpp.autoAddFileAssociations": false,
+  "cmake.buildArgs": [
+    "-G \"Visual Studio 18 2026\"",
+    "-A x64",
+    "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+  ]
 }
