@@ -101,6 +101,8 @@ veh_exception_handler(EXCEPTION_POINTERS *exception_pointers)
         return EXCEPTION_CONTINUE_SEARCH;
     }
 
+    std::cout << "C++ exception caught in VEH handler" << std::endl;
+
     try {
         if (std::current_exception()) {
             throw;
@@ -115,6 +117,8 @@ veh_exception_handler(EXCEPTION_POINTERS *exception_pointers)
     } catch (...) {
         std::cerr << "Uncaught non-standard exception" << std::endl;
     }
+
+    return EXCEPTION_CONTINUE_SEARCH;
 }
 
 #endif
@@ -122,6 +126,8 @@ veh_exception_handler(EXCEPTION_POINTERS *exception_pointers)
 static void
 handle_terminate()
 {
+    std::cout << "C++ exception caught in terminate handler" << std::endl;
+
     try {
         if (std::current_exception()) {
             throw;
@@ -165,20 +171,6 @@ on_crash_callback(
 
     std::cout << "Crash detected!" << std::endl;
 
-    const auto exception = std::current_exception();
-    if (exception) {
-        try {
-            std::rethrow_exception(exception);
-        } catch (const std::bad_alloc &e) {
-            std::cerr << "Caught bad_alloc exception: " << e.what()
-                      << std::endl;
-        } catch (const std::exception &e) {
-            std::cerr << "Caught exception: " << e.what() << std::endl;
-        } catch (...) {
-            std::cerr << "Caught non-standard exception" << std::endl;
-        }
-    }
-
 #ifdef _WIN32
     if (!!uctx) {
         const EXCEPTION_RECORD *exception_record
@@ -201,8 +193,21 @@ on_crash_callback(
     print_stack_trace();
 #endif
 
-    sentry_value_set_by_key(
-        event, "on_crash", sentry_value_new_string("handled_cpp"));
+    try {
+        if (std::current_exception()) {
+            std::cout << "on_crash caught an active exception" << std::endl;
+            throw;
+        } else {
+            std::cout << "on_crash called without an active exception"
+                      << std::endl;
+        }
+    } catch (const std::bad_alloc &e) {
+        std::cerr << "Caught bad_alloc exception: " << e.what() << std::endl;
+    } catch (const std::exception &e) {
+        std::cerr << "Caught exception: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Caught non-standard exception" << std::endl;
+    }
 
     return event;
 }
@@ -273,7 +278,46 @@ oom_bad_alloc_crash()
     size_t enormous_size = SIZE_MAX - 1;
     char *ptr = new char[enormous_size];
     (void)ptr;
-    // throw std::bad_alloc();
+}
+
+void
+oom_bad_alloc_crash_rethrow()
+{
+    std::cout << "Triggering OOM bad_alloc crash..." << std::endl;
+    try {
+        // 尝试分配一个巨大的内存块
+        size_t enormous_size = SIZE_MAX - 1;
+        char *ptr = new char[enormous_size];
+        (void)ptr;
+    } catch (const std::bad_alloc &e) {
+        std::cerr << "Caught bad_alloc exception: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+void
+oom_bad_alloc_crash_noexcept() noexcept
+{
+    std::cout << "Triggering OOM bad_alloc crash..." << std::endl;
+    // 尝试分配一个巨大的内存块
+    size_t enormous_size = SIZE_MAX - 1;
+    char *ptr = new char[enormous_size];
+    (void)ptr;
+}
+
+void
+oom_bad_alloc_crash_noexcept_rethrow() noexcept
+{
+    std::cout << "Triggering OOM bad_alloc crash..." << std::endl;
+    try {
+        // 尝试分配一个巨大的内存块
+        size_t enormous_size = SIZE_MAX - 1;
+        char *ptr = new char[enormous_size];
+        (void)ptr;
+    } catch (const std::bad_alloc &e) {
+        std::cerr << "Caught bad_alloc exception: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 // C++ 异常崩溃
@@ -369,7 +413,7 @@ main(int argc, char **argv)
 #endif
 
     // 初始化 Sentry
-    if (sentry_init(options) != 0) {
+    if (has_arg(argc, argv, "enable-sentry") && sentry_init(options) != 0) {
         std::cerr << "Failed to initialize Sentry" << std::endl;
         return 1;
     }
@@ -444,6 +488,18 @@ main(int argc, char **argv)
         crash_triggers::oom_bad_alloc_crash();
     }
 
+    if (has_arg(argc, argv, "crash-oom-rethrow")) {
+        crash_triggers::oom_bad_alloc_crash_rethrow();
+    }
+
+    if (has_arg(argc, argv, "crash-oom-noexcept")) {
+        crash_triggers::oom_bad_alloc_crash_noexcept();
+    }
+
+    if (has_arg(argc, argv, "crash-oom-noexcept-rethrow")) {
+        crash_triggers::oom_bad_alloc_crash_noexcept_rethrow();
+    }
+
     if (has_arg(argc, argv, "crash-runtime-error")) {
         crash_triggers::runtime_error_crash();
     }
@@ -466,8 +522,8 @@ main(int argc, char **argv)
     sleep_s(10);
 
     // 关闭 Sentry
-    // std::cout << "Shutting down Sentry..." << std::endl;
-    // sentry_close();
+    std::cout << "Shutting down Sentry..." << std::endl;
+    sentry_close();
 
     std::cout << "Program completed successfully" << std::endl;
     return 0;

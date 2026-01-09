@@ -7,9 +7,13 @@
 
   // C++ Extension
   "C_Cpp.autoAddFileAssociations": false,
-  "cmake.buildArgs": [
-    "-G \"Visual Studio 18 2026\"",
-    "-A x64",
-    "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+
+  // CMake Tools Extension
+  "cmake.generator": "Visual Studio 18 2026",
+  "cmake.configureArgs": [
+    "-DSENTRY_BUILD_TESTS:BOOL=OFF",
+    "-DSENTRY_BUILD_EXAMPLES:BOOL=ON",
+    "-DSENTRY_BUILD_BENCHMARKS:BOOL=OFF",
+    "-DSENTRY_ENABLE_INSTALL:BOOL=ON"
   ]
 }
