@@ -18,6 +18,8 @@
 #    include <Windows.h>
 
 #    include <DbgHelp.h>
+#    include <ehdata.h>
+
 #    pragma comment(lib, "dbghelp.lib")
 
 #    define sleep_s(SECONDS) Sleep((SECONDS) * 1000)
@@ -146,6 +148,39 @@ handle_terminate()
     std::abort();
 }
 
+static void
+print_cpp_exception_info(const EXCEPTION_RECORD *record)
+{
+    auto const exception_record
+        = reinterpret_cast<const EHExceptionRecord *>(record);
+    if (PER_IS_MSVC_PURE_OR_NATIVE_EH(exception_record)) {
+        // 只读取类型信息，不访问对象内容
+        auto p_throw_info = exception_record->params.pThrowInfo;
+
+#if _EH_RELATIVE_TYPEINFO
+        auto image_base = (uintptr_t)exception_record->params.pThrowImageBase;
+        auto type_array = (CatchableTypeArray *)(image_base
+            + p_throw_info->pCatchableTypeArray);
+        auto catchable_type = (CatchableType *)(image_base
+            + type_array->arrayOfCatchableTypes[0]);
+        auto type_info = (std::type_info *)(image_base + catchable_type->pType);
+#else
+        auto type_info
+            = p_throw_info->pCatchableTypeArray->arrayOfCatchableTypes[0];
+#endif
+
+        // 记录类型名称（相对安全）
+        // std::bad_alloc => class std::bad_alloc
+        std::cout << "Unhandled exception of name: " << type_info->name()
+                  << std::endl;
+        // std::bad_alloc => .?AVbad_alloc@std@@
+        std::cout << "Unhandled exception of raw name: "
+                  << type_info->raw_name() << std::endl;
+    } else {
+        std::cout << "Unhandled exception of type: unknown" << std::endl;
+    }
+}
+
 // before_send 回调
 static sentry_value_t
 before_send_callback(sentry_value_t event, void *hint, void *user_data)
@@ -187,6 +222,9 @@ on_crash_callback(
                 std::cout << " (NONCONTINUABLE)";
             }
             std::cout << std::endl;
+
+            print_cpp_exception_info(
+                (const EXCEPTION_RECORD *)uctx->exception_ptrs.ExceptionRecord);
         }
     }
 

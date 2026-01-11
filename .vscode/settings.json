@@ -9,11 +9,12 @@
   "C_Cpp.autoAddFileAssociations": false,
 
   // CMake Tools Extension
-  "cmake.generator": "Visual Studio 18 2026",
+  "cmake.generator": "Ninja",
   "cmake.configureArgs": [
+    "-DCMAKE_COMPILE_COMMANDS:BOOL=ON",
     "-DSENTRY_BUILD_TESTS:BOOL=OFF",
     "-DSENTRY_BUILD_EXAMPLES:BOOL=ON",
-    "-DSENTRY_BUILD_BENCHMARKS:BOOL=OFF",
-    "-DSENTRY_ENABLE_INSTALL:BOOL=ON"
-  ]
+    "-DSENTRY_BUILD_BENCHMARKS:BOOL=OFF"
+  ],
+  "codeQL.githubDatabase.download": "never"
 }
