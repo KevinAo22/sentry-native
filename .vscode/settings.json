@@ -4,10 +4,8 @@
   "editor.formatOnType": true,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-
   // C++ Extension
   "C_Cpp.autoAddFileAssociations": false,
-
   // CMake Tools Extension
   "cmake.generator": "Ninja",
   "cmake.configureArgs": [
@@ -15,6 +13,5 @@
     "-DSENTRY_BUILD_TESTS:BOOL=OFF",
     "-DSENTRY_BUILD_EXAMPLES:BOOL=ON",
     "-DSENTRY_BUILD_BENCHMARKS:BOOL=OFF"
-  ],
-  "codeQL.githubDatabase.download": "never"
+  ]
 }
