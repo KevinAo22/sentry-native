@@ -1,5 +1,5 @@
-#ifndef CRASHPAD_PLUS_H_INCLUDED
-#define CRASHPAD_PLUS_H_INCLUDED
+#ifndef CRASHPAD_PLUS_H
+#define CRASHPAD_PLUS_H
 
 #include "snapshot/process_snapshot.h"
 
@@ -10,4 +10,4 @@ void OnNonCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot);
 
 } // namespace crashpad_plus
 
-#endif // CRASHPAD_PLUS_H_INCLUDED
+#endif // CRASHPAD_PLUS_H

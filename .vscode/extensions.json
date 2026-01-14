@@ -3,6 +3,8 @@
   // for the documentation about the extensions.json format
   "recommendations": [
     "ms-vscode.cpptools",
-    "ms-vscode.cmake-tools"
+    "ms-vscode.cmake-tools",
+    "xaver.clang-format",
+    "llvm-vs-code-extensions.vscode-clangd",
   ]
 }

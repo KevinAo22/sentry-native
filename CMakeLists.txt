@@ -7,6 +7,7 @@ else()
 	# The Android tools ship with this ancient version, which we need to support.
 	cmake_minimum_required(VERSION 3.10)
 	cmake_policy(SET CMP0077 NEW)
+	cmake_policy(SET CMP0079 NEW)
 endif()
 
 # Allow downstream SDKs to override the SDK version at CMake configuration time
