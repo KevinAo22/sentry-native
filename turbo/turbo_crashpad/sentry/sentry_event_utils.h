@@ -3,10 +3,10 @@
 
 #include "snapshot/process_snapshot.h"
 
-namespace crashpad_plus {
+namespace turbo_crashpad {
 
 void EnrichSentryCrashEvent(const crashpad::ProcessSnapshot &process_snapshot);
 
-} // namespace crashpad_plus
+} // namespace turbo_crashpad
 
 #endif // SENTRY_EVENT_UTILS_H

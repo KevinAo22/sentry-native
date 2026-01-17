@@ -644,7 +644,7 @@ if(SENTRY_BACKEND_CRASHPAD)
 		set(CRASHPAD_ENABLE_INSTALL ON CACHE BOOL "Enable crashpad installation" FORCE)
 	endif()
 
-	add_subdirectory(plugins/crashpad_plus crashpad_plus_build)
+	add_subdirectory(turbo/turbo_crashpad turbo_crashpad_build)
 
 	add_subdirectory(external/crashpad crashpad_build)
 
@@ -654,10 +654,10 @@ if(SENTRY_BACKEND_CRASHPAD)
 
 	if(TARGET crashpad_handler_lib)
     	target_include_directories(crashpad_handler_lib PUBLIC
-			"${PROJECT_SOURCE_DIR}/plugins/crashpad_plus"
+			"${PROJECT_SOURCE_DIR}/turbo/turbo_crashpad"
 		)
 		target_link_libraries(crashpad_handler_lib PUBLIC
-			$<TARGET_OBJECTS:crashpad_plus>
+			$<TARGET_OBJECTS:turbo_crashpad>
 		)
 	endif()
 

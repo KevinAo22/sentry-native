@@ -4,7 +4,7 @@
 
 using namespace crashpad;
 
-namespace crashpad_plus {
+namespace turbo_crashpad {
 
 void
 EnrichSentryCrashEvent(const crashpad::ProcessSnapshot &process_snapshot)
@@ -14,4 +14,4 @@ EnrichSentryCrashEvent(const crashpad::ProcessSnapshot &process_snapshot)
     // TODO: Implement later
 }
 
-} // namespace crashpad_plus
+} // namespace turbo_crashpad

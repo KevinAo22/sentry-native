@@ -1,8 +1,8 @@
-#include "crashpad_plus.h"
+#include "turbo_crashpad.h"
 
 #include "sentry/sentry_event_utils.h"
 
-namespace crashpad_plus {
+namespace turbo_crashpad {
 
 void
 OnCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot)
@@ -16,4 +16,4 @@ OnNonCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot)
     // TODO: Implement later
 }
 
-} // namespace crashpad_plus
+} // namespace turbo_crashpad

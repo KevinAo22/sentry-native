@@ -1,13 +1,13 @@
-#ifndef CRASHPAD_PLUS_H
-#define CRASHPAD_PLUS_H
+#ifndef TURBO_CRASHPAD_H
+#define TURBO_CRASHPAD_H
 
 #include "snapshot/process_snapshot.h"
 
-namespace crashpad_plus {
+namespace turbo_crashpad {
 
 void OnCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot);
 void OnNonCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot);
 
-} // namespace crashpad_plus
+} // namespace turbo_crashpad
 
-#endif // CRASHPAD_PLUS_H
+#endif // TURBO_CRASHPAD_H
