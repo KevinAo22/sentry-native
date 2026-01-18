@@ -5,9 +5,10 @@
 namespace turbo_crashpad {
 
 void
-OnCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot)
+OnCrashDumpEvent(const crashpad::ProcessSnapshot &process_snapshot,
+    const std::vector<base::FilePath> &attachments)
 {
-    EnrichSentryCrashEvent(process_snapshot);
+    EnrichSentryCrashEvent(process_snapshot, attachments);
 }
 
 void

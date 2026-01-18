@@ -3,19 +3,19 @@ project(turbo_crashpad LANGUAGES CXX)
 
 add_library(turbo_crashpad OBJECT
     turbo_crashpad.h
+	turbo_crashpad.cc
 	sentry/sentry_event_utils.h
+	sentry/sentry_event_utils.cc
 )
 
 if (WIN32)
     target_sources(turbo_crashpad PRIVATE
-        turbo_crashpad_win.cc
 		sentry/sentry_event_utils_win.cc
     )
 endif()
 
 if(APPLE AND NOT IOS)
     target_sources(turbo_crashpad PRIVATE
-        turbo_crashpad_mac.cc
 		sentry/sentry_event_utils_mac.cc
     )
 endif()
